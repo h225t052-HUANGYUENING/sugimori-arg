@@ -1,0 +1,30 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>私立北杉高校</title><style>
+:root{
+  --ink:#1d2733;--muted:#657385;--line:#d8dee8;--bg:#f3f6f9;--card:#fff;
+  --blue:#315f8f;--green:#0b6b4b;--red:#8b2635;--cream:#f8f4e8;--shadow:0 12px 30px rgba(24,38,56,.08);
+}
+*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic","Yu Gothic UI",Meiryo,sans-serif;line-height:1.75}
+a{color:var(--blue);text-decoration:none} a:hover{text-decoration:underline}
+.top{height:48px;background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 22px;position:sticky;top:0;z-index:5}
+.top .brand{font-weight:700;color:#21334a;letter-spacing:.04em}.top .back{font-size:13px;color:#66758a}
+.wrap{max-width:920px;margin:28px auto;padding:0 18px}.card{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:26px;margin:18px 0}
+.kicker{font-size:12px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+h1{font-size:28px;line-height:1.3;margin:0 0 12px} h2{font-size:20px;margin:24px 0 8px}
+p{margin:9px 0}.muted{color:var(--muted);font-size:13px}.small{font-size:12px;color:var(--muted)}
+.badge{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:2px 10px;font-size:12px;color:#5a6878;background:#fbfcfd;margin:3px}
+.keyword{font-weight:700;color:#8a4b00;border-bottom:1px dotted #b88a39}.btn{display:inline-block;background:#24384f;color:#fff;border-radius:10px;padding:10px 15px;margin:6px 6px 0 0}
+.btn:hover{text-decoration:none;background:#172739}.danger{color:var(--red);font-weight:700}.notice{background:#fff8dd;border-left:4px solid #d0a52e;padding:12px 14px;border-radius:8px;margin:12px 0}.doc{font-family:"Yu Mincho","Hiragino Mincho ProN",serif;background:#fff;border:1px solid #d7d0bf;padding:22px;border-radius:8px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}.mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.footer{margin:32px auto 20px;text-align:center;font-size:12px;color:#8995a3}
+input,button{font:inherit} .searchline{display:flex;gap:8px;margin:14px 0}.searchline input{flex:1;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:#fff}.searchline button{border:0;border-radius:10px;background:#315f8f;color:#fff;padding:10px 16px;cursor:pointer}.result{border-left:3px solid #6d8fb1;padding:10px 0 10px 14px;margin:12px 0;background:#fff}.result .url{font-size:12px;color:#177245}.result a{font-size:17px;font-weight:650}
+@media(max-width:650px){.wrap{margin:18px auto}.card{padding:18px}h1{font-size:23px}.searchline{flex-direction:column}.top{padding:0 14px}}
+
+body{background:#f6f8fb}.schoolhead{background:#173d66;color:#fff;padding:32px 22px}.schoolhead .wrap{margin:0 auto}.schoolhead h1{color:#fff}.navlinks a{color:#fff;margin-right:18px;font-size:13px}
+</style></head><body><div class="top"><a class="back" href="index.html">← 検索へ戻る</a><div class="brand">私立北杉高等学校</div></div>
+<div class="schoolhead"><div class="wrap"><h1>私立 北杉高等学校</h1><p>自然と共に学ぶ、地域密着型の小規模校</p><div class="navlinks"><a href="#news">お知らせ</a><a href="#search">校内検索</a></div></div></div>
+<div class="wrap">
+<div class="card" id="news"><h2>お知らせ</h2><p><a href="medical.html">2026年度 三年生体検結果</a></p><p class="small">在校生・保護者向け資料</p></div>
+<div class="card" id="search"><h2>校内検索</h2><div class="searchline"><input id="schoolQ" placeholder="生徒名・資料名を入力" onkeydown="if(event.key==='Enter')schoolSearch()"><button onclick="schoolSearch()">検索</button></div><div id="schoolResults"></div></div>
+<div class="card"><h2>学校案内</h2><p>杉守村にある小規模な私立高校です。地域医療機関と連携し、定期健康診断を実施しています。</p></div>
+</div><script>
+function schoolSearch(){const q=document.getElementById('schoolQ').value.trim();const r=document.getElementById('schoolResults');if(q.includes('杣木')||q.includes('真白')){r.innerHTML='<div class="result"><a href="mashiro.html">杣木真白 行方不明報告</a><div class="url">kitasugi-high.example/archive/mashiro</div><div class="desc">2016年、巡山祭当日に行方不明となった生徒に関する記録。</div></div>';}else{r.innerHTML='<p class="muted">該当する検索結果はありません。</p>';}}
+</script></body></html>
