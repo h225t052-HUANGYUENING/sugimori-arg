@@ -269,14 +269,14 @@ a{
     <div class="avatar" onclick="location.href='profile_haruka.html'">🌸</div>
     <div class="info">
       <div class="name">杉谷 遥（🍰06/17）</div>
-      <div class="status">最終ログイン：<span data-date="-2"></span> 06:48</div>
+      <div class="status">最終ログイン：2026/04/22 06:48</div>
     </div>
     <div class="menu">⋯</div>
   </header>
 
   <main class="chat">
 
-    <div class="day"><span data-date="-14"></span></div>
+    <div class="day"><span>2026/04/10</span></div>
 
     <div class="row left">
       <div class="mini-avatar" onclick="location.href='profile_haruka.html'">🌸</div>
@@ -306,7 +306,7 @@ a{
       <div class="meta">20:27</div>
     </div>
 
-    <div class="day"><span data-date="-10"></span></div>
+    <div class="day"><span>2026/04/14</span></div>
 
     <div class="row right">
       <div class="meta"><span class="read">既読</span>22:03</div>
@@ -336,7 +336,7 @@ a{
       <div class="meta">22:11</div>
     </div>
 
-    <div class="day"><span data-date="-7"></span></div>
+    <div class="day"><span>2026/04/17</span></div>
 
     <div class="row left">
       <div class="mini-avatar" onclick="location.href='profile_haruka.html'">🌸</div>
@@ -372,7 +372,7 @@ a{
       <div class="meta">21:18</div>
     </div>
 
-    <div class="day"><span data-date="-4"></span></div>
+    <div class="day"><span>2026/04/20</span></div>
 
     <div class="row left">
       <div class="mini-avatar" onclick="location.href='profile_haruka.html'">🌸</div>
@@ -408,7 +408,7 @@ a{
       <div class="meta">19:07</div>
     </div>
 
-    <div class="day"><span data-date="-2"></span></div>
+    <div class="day"><span>2026/04/22</span></div>
 
     <div class="row left">
       <div class="mini-avatar" onclick="location.href='profile_haruka.html'">🌸</div>
@@ -459,24 +459,6 @@ a{
   </div>
 
 </div>
-
-<script>
-function formatDate(offsetDays){
-  const date = new Date();
-  date.setDate(date.getDate() + offsetDays);
-
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-
-  return `${y}/${m}/${d}`;
-}
-
-document.querySelectorAll("[data-date]").forEach(el=>{
-  const offset = Number(el.dataset.date || 0);
-  el.textContent = formatDate(offset);
-});
-</script>
 
 </body>
 </html>
