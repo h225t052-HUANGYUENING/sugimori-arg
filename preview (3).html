@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>トーク一覧</title>
+
+<style>
+:root{
+  --green:#06c755;
+  --text:#1f2328;
+  --line:#e1e5ea;
+  --bg:#f4f6f8;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:#f2f4f7;
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic","Yu Gothic UI",Meiryo,sans-serif;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+.phone{
+  width:min(430px,100%);
+  min-height:100vh;
+  margin:0 auto;
+  background:var(--bg);
+  box-shadow:0 0 28px rgba(0,0,0,.14);
+  display:flex;
+  flex-direction:column;
+}
+
+.header{
+  background:#fff;
+  border-bottom:1px solid var(--line);
+  padding:14px 16px 10px;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+.topline{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+}
+
+.back{
+  font-size:13px;
+  color:#5f6b78;
+}
+
+.back:hover{
+  text-decoration:underline;
+}
+
+.title{
+  font-size:25px;
+  font-weight:800;
+  letter-spacing:.02em;
+  margin-top:10px;
+}
+
+.actions{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.add{
+  border:0;
+  background:var(--green);
+  color:#fff;
+  border-radius:999px;
+  padding:7px 12px;
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.add:hover{
+  filter:brightness(.96);
+}
+
+.icon-btn{
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  border:0;
+  background:#f0f2f4;
+  display:grid;
+  place-items:center;
+  color:#5f6b78;
+  cursor:pointer;
+}
+
+.search{
+  margin-top:12px;
+  background:#f0f2f4;
+  border-radius:999px;
+  height:36px;
+  display:flex;
+  align-items:center;
+  padding:0 12px;
+  color:#8a96a3;
+  font-size:13px;
+  user-select:none;
+}
+
+.list{
+  background:#fff;
+  margin-top:10px;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+}
+
+.chat-item{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:13px 16px;
+  border-bottom:1px solid #eef1f4;
+  cursor:pointer;
+}
+
+.chat-item:last-child{
+  border-bottom:0;
+}
+
+.chat-item:hover{
+  background:#f8fafb;
+  text-decoration:none;
+}
+
+.chat-item.disabled{
+  cursor:default;
+}
+
+.chat-item.disabled:hover{
+  background:#fff;
+}
+
+.avatar{
+  width:48px;
+  height:48px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#ffdce9,#fff6c9);
+  display:grid;
+  place-items:center;
+  font-size:24px;
+  flex-shrink:0;
+}
+
+.avatar.night{
+  background:linear-gradient(135deg,#1f2937,#64748b);
+  color:#fff;
+}
+
+.avatar.yellow{
+  background:linear-gradient(135deg,#fff4c2,#fffaf0);
+}
+
+.avatar.gray{
+  background:linear-gradient(135deg,#e5e7eb,#f8fafc);
+}
+
+.chat-main{
+  flex:1;
+  min-width:0;
+}
+
+.name-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+
+.name{
+  font-size:15px;
+  font-weight:700;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.time{
+  color:#9aa3ad;
+  font-size:11px;
+  flex-shrink:0;
+}
+
+.preview{
+  color:#687583;
+  font-size:13px;
+  margin-top:3px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.preview.danger{
+  color:#a14a4a;
+}
+
+.unread{
+  width:8px;
+  height:8px;
+  background:#ff4b5c;
+  border-radius:50%;
+  margin-left:6px;
+  flex-shrink:0;
+}
+
+.section-label{
+  padding:14px 16px 6px;
+  color:#8793a0;
+  font-size:12px;
+}
+
+.empty-card{
+  margin:14px 16px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:14px;
+  padding:14px;
+  color:#7b8794;
+  font-size:12px;
+  line-height:1.7;
+}
+
+.nav{
+  margin-top:auto;
+  height:58px;
+  background:#fff;
+  border-top:1px solid var(--line);
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+}
+
+.nav a{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  color:#7b8794;
+  font-size:11px;
+}
+
+.nav a.active{
+  color:var(--green);
+  font-weight:700;
+}
+
+.nav .emoji{
+  font-size:18px;
+  line-height:1;
+}
+
+@media(max-width:480px){
+  .phone{
+    box-shadow:none;
+  }
+}
+</style>
+</head>
+
+<body>
+<div class="phone">
+
+  <header class="header">
+    <div class="topline">
+      <a class="back" href="index.html">← Moorii に戻る</a>
+      <div class="actions">
+        <button class="icon-btn" aria-label="settings">⚙</button>
+        <button class="add" onclick="location.href='add_friend.html'">友だち追加</button>
+      </div>
+    </div>
+
+    <div class="title">トーク</div>
+
+    <div class="search">🔍 トーク・友だちを検索</div>
+  </header>
+
+  <main>
+    <div class="section-label">最近のトーク</div>
+
+    <div class="list">
+      <a class="chat-item" href="chat.html">
+        <div class="avatar">🌸</div>
+
+        <div class="chat-main">
+          <div class="name-row">
+            <div class="name">杉谷 遥（🍰06/17）</div>
+            <div class="time">2日前</div>
+          </div>
+          <div class="preview danger">ビデオ通話　応答なし</div>
+        </div>
+
+        <div class="unread" title="未読"></div>
+      </a>
+
+      <div class="chat-item disabled">
+        <div class="avatar yellow">☕</div>
+        <div class="chat-main">
+          <div class="name-row">
+            <div class="name">駅前カフェ シフト連絡</div>
+            <div class="time">2日前</div>
+          </div>
+          <div class="preview">来週のシフト表を更新しました</div>
+        </div>
+      </div>
+
+      <div class="chat-item disabled">
+        <div class="avatar gray">📝</div>
+        <div class="chat-main">
+          <div class="name-row">
+            <div class="name">卒制メモ共有</div>
+            <div class="time">1週間前</div>
+          </div>
+          <div class="preview">参考資料、あとでまとめて送る</div>
+        </div>
+      </div>
+
+      <div class="chat-item disabled">
+        <div class="avatar night">🌙</div>
+        <div class="chat-main">
+          <div class="name-row">
+            <div class="name">夜道観察部</div>
+            <div class="time">2週間前</div>
+          </div>
+          <div class="preview">山道の街灯、一本だけ消えてたらしい</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="empty-card">
+      このページは端末内に保存されたトーク履歴です。<br>
+      一部の連絡先は、ネットワーク状況により最新情報を取得できない場合があります。
+    </div>
+  </main>
+
+  <nav class="nav">
+    <a href="#" class="active">
+      <span class="emoji">💬</span>
+      トーク
+    </a>
+    <a href="add_friend.html">
+      <span class="emoji">👤</span>
+      友だち
+    </a>
+    <a href="index.html">
+      <span class="emoji">🔍</span>
+      検索
+    </a>
+    <a href="#">
+      <span class="emoji">⋯</span>
+      その他
+    </a>
+  </nav>
+
+</div>
+</body>
+</html>
