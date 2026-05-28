@@ -1409,7 +1409,7 @@ a:hover{text-decoration:underline;}
 <div class="search-result-mask" id="searchResultMask" onclick="closeSearchResult()">
   <div class="search-result-card" onclick="event.stopPropagation()">
     <div class="search-result-title">知新で検索</div>
-    <div class="search-result-desc">「巡山祭」に一致する投稿が見つかりました。</div>
+    <div class="search-result-desc">「巡山祭後半部分」に一致する投稿が見つかりました。</div>
 
     <div class="search-result-item" onclick="openDeletedFestivalPost()">
       <div class="search-result-url">chishin.local/deleted/20160425-maki</div>
@@ -1510,9 +1510,9 @@ function fakeSearch(){
   const v = document.getElementById("siteSearch").value.trim();
   if(!v) return;
 
-  if(v.includes("杉鳴様") || v.includes("杉鳴") || v.includes("神様")){
+  if(v.includes("杉鳴様") || v.includes("杉鳴")){
     openSuginariSearchResult();
-  }else if(v.includes("巡山祭") || v.includes("神隠し") || v.includes("神隱")){
+  }else if(v.includes("巡山祭後半部分") || v.includes("後半部分")){
     openSearchResult();
   }else{
     alert("該当する投稿は見つかりませんでした。");
