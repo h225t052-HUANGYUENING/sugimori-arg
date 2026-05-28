@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>杉谷 遥とのチャットログ</title>
+<style>
+:root{
+  --bg:#f1f3f6;
+  --phone-bg:#dbe7f2;
+  --header:#26313c;
+  --header-text:#f8fafc;
+  --muted:#7c8794;
+  --line:#cfd8e3;
+  --white:#ffffff;
+  --green:#9be88f;
+  --green-text:#13391e;
+  --date:#bcc8d4;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:var(--bg);
+  color:#1f2933;
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic","Yu Gothic UI",Meiryo,sans-serif;
+}
+
+a{
+  color:inherit;
+  text-decoration:none;
+}
+
+.chat-phone{
+  width:min(460px,100%);
+  min-height:100vh;
+  margin:0 auto;
+  background:var(--phone-bg);
+  box-shadow:0 0 28px rgba(20,30,40,.14);
+  display:flex;
+  flex-direction:column;
+}
+
+.header{
+  height:70px;
+  background:var(--header);
+  color:var(--header-text);
+  display:grid;
+  grid-template-columns:42px 48px 1fr 38px;
+  align-items:center;
+  padding:0 14px;
+  gap:8px;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+
+.back{
+  font-size:24px;
+  color:#dbe4ef;
+  text-align:center;
+}
+
+.avatar-main{
+  width:40px;
+  height:40px;
+  border-radius:50%;
+  background:#ffd7ea;
+  display:grid;
+  place-items:center;
+  font-size:21px;
+  box-shadow:0 1px 4px rgba(0,0,0,.22);
+}
+
+.header-info{
+  min-width:0;
+}
+
+.name{
+  font-size:17px;
+  font-weight:800;
+  line-height:1.3;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.status{
+  font-size:11px;
+  color:#c6d0dc;
+  margin-top:2px;
+}
+
+.menu{
+  color:#c6d0dc;
+  font-size:24px;
+  text-align:right;
+  letter-spacing:1px;
+}
+
+.notice{
+  background:#edf3fa;
+  color:#667386;
+  font-size:12px;
+  text-align:center;
+  padding:8px 12px;
+  border-bottom:1px solid #cfd8e3;
+}
+
+.chat{
+  flex:1;
+  padding:18px 14px 22px;
+  background:
+    linear-gradient(rgba(255,255,255,.15),rgba(255,255,255,.15)),
+    var(--phone-bg);
+}
+
+.date{
+  text-align:center;
+  margin:12px 0 18px;
+}
+
+.date span{
+  display:inline-block;
+  background:var(--date);
+  color:#fff;
+  border-radius:999px;
+  padding:4px 13px;
+  font-size:12px;
+  font-weight:700;
+}
+
+.system{
+  text-align:center;
+  margin:8px 0 15px;
+}
+
+.system span{
+  display:inline-block;
+  background:rgba(255,255,255,.56);
+  color:#778394;
+  border-radius:999px;
+  padding:5px 12px;
+  font-size:12px;
+}
+
+.msg{
+  display:flex;
+  align-items:flex-end;
+  gap:8px;
+  margin:10px 0;
+}
+
+.msg.to{
+  justify-content:flex-end;
+}
+
+.avatar{
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  background:#ffd7ea;
+  display:grid;
+  place-items:center;
+  font-size:16px;
+  flex-shrink:0;
+}
+
+.bubble-wrap{
+  max-width:72%;
+}
+
+.bubble{
+  position:relative;
+  padding:10px 13px;
+  border-radius:16px;
+  font-size:14px;
+  line-height:1.65;
+  word-break:break-word;
+  box-shadow:0 1px 2px rgba(20,30,40,.08);
+}
+
+.msg.from .bubble{
+  background:var(--white);
+  border-bottom-left-radius:4px;
+}
+
+.msg.to .bubble{
+  background:var(--green);
+  color:var(--green-text);
+  border-bottom-right-radius:4px;
+}
+
+.meta{
+  margin-top:3px;
+  color:#6f7b8b;
+  font-size:10px;
+}
+
+.msg.to .meta{
+  text-align:right;
+}
+
+.read{
+  display:block;
+  font-size:10px;
+}
+
+.inputbar{
+  background:#eef3f8;
+  border-top:1px solid #cfd8e3;
+  padding:9px 10px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  position:sticky;
+  bottom:0;
+}
+
+.plus{
+  width:30px;
+  height:30px;
+  border-radius:50%;
+  background:#fff;
+  border:1px solid #c7d2df;
+  color:#6c7785;
+  display:grid;
+  place-items:center;
+  font-size:21px;
+  line-height:1;
+}
+
+.input{
+  flex:1;
+  min-height:32px;
+  border-radius:999px;
+  background:#fff;
+  border:1px solid #c7d2df;
+  color:#9aa5b4;
+  font-size:13px;
+  padding:7px 12px;
+}
+
+.send{
+  border:0;
+  background:#7fd976;
+  color:#13401d;
+  border-radius:999px;
+  padding:7px 12px;
+  font-weight:800;
+  font-size:13px;
+}
+
+.footer{
+  width:min(460px,100%);
+  margin:10px auto 22px;
+  padding:0 12px;
+  text-align:center;
+  color:#8995a3;
+  font-size:11px;
+  line-height:1.7;
+}
+
+@media(max-width:520px){
+  .chat-phone{
+    width:100%;
+    box-shadow:none;
+  }
+
+  .bubble-wrap{
+    max-width:76%;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="chat-phone">
+
+  <header class="header">
+    <a class="back" href="index.html">‹</a>
+    <div class="avatar-main">🌸</div>
+    <div class="header-info">
+      <div class="name">杉谷 遥（🎂06/17）</div>
+      <div class="status">本機保存ログ：2016/04/25</div>
+    </div>
+    <div class="menu">…</div>
+  </header>
+
+  <div class="notice">
+    相手があなたの友だち申請を承認しました。
+  </div>
+
+  <main class="chat">
+
+    <div class="date"><span>2016/04/25</span></div>
+    <div class="system"><span>この会話は本機に保存されています</span></div>
+
+    <div class="msg from">
+      <div class="avatar">🌸</div>
+      <div class="bubble-wrap">
+        <div class="bubble">こんにちは！</div>
+        <div class="meta">18:07</div>
+      </div>
+    </div>
+
+    <div class="msg to">
+      <div class="bubble-wrap">
+        <div class="bubble">こんにちは。友だちありがとう</div>
+        <div class="meta"><span class="read">既読</span>18:07</div>
+      </div>
+    </div>
+
+    <div class="msg from">
+      <div class="avatar">🌸</div>
+      <div class="bubble-wrap">
+        <div class="bubble">これ、ちゃんと送れてる？</div>
+        <div class="meta">18:09</div>
+      </div>
+    </div>
+
+    <div class="msg to">
+      <div class="bubble-wrap">
+        <div class="bubble">送れてるよ</div>
+        <div class="meta"><span class="read">既読</span>18:09</div>
+      </div>
+    </div>
+
+    <div class="msg from">
+      <div class="avatar">🌸</div>
+      <div class="bubble-wrap">
+        <div class="bubble">よかった。自分のスマホ、はじめてだから、まだよくわかんない</div>
+        <div class="meta">18:12</div>
+      </div>
+    </div>
+
+    <div class="msg to">
+      <div class="bubble-wrap">
+        <div class="bubble">だいじょうぶ。すぐ慣れる</div>
+        <div class="meta"><span class="read">既読</span>18:12</div>
+      </div>
+    </div>
+
+    <div class="msg from">
+      <div class="avatar">🌸</div>
+      <div class="bubble-wrap">
+        <div class="bubble">怪談好きな人、あんまりいないからうれしい！</div>
+        <div class="meta">18:15</div>
+      </div>
+    </div>
+
+    <div class="msg to">
+      <div class="bubble-wrap">
+        <div class="bubble">こわい話好き。学校で言うと、変って言われる</div>
+        <div class="meta"><span class="read">既読</span>18:15</div>
+      </div>
+    </div>
+
+    <div class="msg from">
+      <div class="avatar">🌸</div>
+      <div class="bubble-wrap">
+        <div class="bubble">わかる！こわいけど、気になっちゃうよね</div>
+        <div class="meta">18:18</div>
+      </div>
+    </div>
+
+    <div class="msg to">
+      <div class="bubble-wrap">
+        <div class="bubble">杉守村の神隠しの話見た。あれ本当？</div>
+        <div class="meta"><span class="read">既読</span>18:18</div>
+      </div>
+    </div>
+
+    <div class="msg from">
+      <div class="avatar">🌸</div>
+      <div class="bubble-wrap">
+        <div class="bubble">しーっ。家でそれ言うと、お母さんに怒られる</div>
+        <div class="meta">18:22</div>
+      </div>
+    </div>
+
+    <div class="msg to">
+      <div class="bubble-wrap">
+        <div class="bubble">え、じゃあ本当にあったの？</div>
+        <div class="meta"><span class="read">既読</span>18:22</div>
+      </div>
+    </div>
+
+    <div class="msg from">
+      <div class="avatar">🌸</div>
+      <div class="bubble-wrap">
+        <div class="bubble">たぶん。大人はあんまり話さないけど、村の子は知ってる</div>
+        <div class="meta">18:26</div>
+      </div>
+    </div>
+
+    <div class="msg to">
+      <div class="bubble-wrap">
+        <div class="bubble">消えた子、名前あるの？</div>
+        <div class="meta"><span class="read">既読</span>18:26</div>
+      </div>
+    </div>
+
+    <div class="msg from">
+      <div class="avatar">🌸</div>
+      <div class="bubble-wrap">
+        <div class="bubble">名前は真白って聞いた</div>
+        <div class="meta">18:29</div>
+      </div>
+    </div>
+
+    <div class="msg to">
+      <div class="bubble-wrap">
+        <div class="bubble">ましろ？かわいい名前</div>
+        <div class="meta"><span class="read">既読</span>18:29</div>
+      </div>
+    </div>
+
+    <div class="msg from">
+      <div class="avatar">🌸</div>
+      <div class="bubble-wrap">
+        <div class="bubble">でも、真白ちゃんはうちの家の子じゃないんだって。だから、くわしいことはよく知らない</div>
+        <div class="meta">18:33</div>
+      </div>
+    </div>
+
+    <div class="msg to">
+      <div class="bubble-wrap">
+        <div class="bubble">どういう意味？</div>
+        <div class="meta"><span class="read">既読</span>18:33</div>
+      </div>
+    </div>
+
+    <div class="msg from">
+      <div class="avatar">🌸</div>
+      <div class="bubble-wrap">
+        <div class="bubble">うん……その子は「杉谷」の家の子じゃないってこと</div>
+        <div class="meta">18:37</div>
+      </div>
+    </div>
+
+    <div class="msg to">
+      <div class="bubble-wrap">
+        <div class="bubble">それだと、何が違うの？</div>
+        <div class="meta"><span class="read">既読</span>18:37</div>
+      </div>
+    </div>
+
+    <div class="msg from">
+      <div class="avatar">🌸</div>
+      <div class="bubble-wrap">
+        <div class="bubble">わかんない。でも大人たちは、なんかうれしそうだった</div>
+        <div class="meta">18:41</div>
+      </div>
+    </div>
+
+    <div class="msg to">
+      <div class="bubble-wrap">
+        <div class="bubble">うれしそう？人が消えたのに？</div>
+        <div class="meta"><span class="read">既読</span>18:41</div>
+      </div>
+    </div>
+
+    <div class="msg from">
+      <div class="avatar">🌸</div>
+      <div class="bubble-wrap">
+        <div class="bubble">うん。だから、変だなって思った</div>
+        <div class="meta">18:45</div>
+      </div>
+    </div>
+
+    <div class="msg to">
+      <div class="bubble-wrap">
+        <div class="bubble">その子は、いつ消えたの？</div>
+        <div class="meta"><span class="read">既読</span>18:45</div>
+      </div>
+    </div>
+
+    <div class="msg from">
+      <div class="avatar">🌸</div>
+      <div class="bubble-wrap">
+        <div class="bubble">たしか、巡山祭の日</div>
+        <div class="meta">18:49</div>
+      </div>
+    </div>
+
+    <div class="msg to">
+      <div class="bubble-wrap">
+        <div class="bubble">それ、めちゃくちゃ怪談じゃん</div>
+        <div class="meta"><span class="read">既読</span>18:49</div>
+      </div>
+    </div>
+
+    <div class="msg from">
+      <div class="avatar">🌸</div>
+      <div class="bubble-wrap">
+        <div class="bubble">でしょ。でも、お祭りのせいって言うと怒られる</div>
+        <div class="meta">18:53</div>
+      </div>
+    </div>
+
+    <div class="msg to">
+      <div class="bubble-wrap">
+        <div class="bubble">杉守山神隠し、メモしとく</div>
+        <div class="meta"><span class="read">既読</span>18:53</div>
+      </div>
+    </div>
+
+    <div class="msg from">
+      <div class="avatar">🌸</div>
+      <div class="bubble-wrap">
+        <div class="bubble">だめー！ばれたら怒られる！</div>
+        <div class="meta">18:57</div>
+      </div>
+    </div>
+
+    <div class="msg to">
+      <div class="bubble-wrap">
+        <div class="bubble">じゃあ秘密</div>
+        <div class="meta"><span class="read">既読</span>18:57</div>
+      </div>
+    </div>
+
+    <div class="msg from">
+      <div class="avatar">🌸</div>
+      <div class="bubble-wrap">
+        <div class="bubble">約束ね</div>
+        <div class="meta">19:00</div>
+      </div>
+    </div>
+
+  </main>
+
+  <div class="inputbar">
+    <div class="plus">＋</div>
+    <div class="input">十年前のログのため送信できません</div>
+    <button class="send">送信</button>
+  </div>
+
+</div>
+
+<div class="footer">
+  このゲームは完全なフィクションです。実在の人物・団体・地名・事件などとは一切関係ありません。
+</div>
+
+</body>
+</html>
