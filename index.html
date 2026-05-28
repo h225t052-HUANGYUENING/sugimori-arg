@@ -1,595 +1,700 @@
 <!doctype html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Moorii</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Moorii Search</title>
+  <style>
+    :root{
+      --text:#202124;
+      --muted:#5f6368;
+      --line:#dadce0;
+      --blue:#1a73e8;
+      --bg:#ffffff;
+      --soft:#f8fafd;
+      --shadow:0 1px 6px rgba(32,33,36,.14);
+    }
 
-<style>
-:root{
-  --text:#202124;
-  --muted:#70757a;
-  --line:#dadce0;
-  --bg:#ffffff;
-  --soft:#f8fafd;
-  --btn:#f8f9fa;
-  --btn-border:#f8f9fa;
-  --shadow:0 1px 6px rgba(32,33,36,.28);
-}
+    *{
+      box-sizing:border-box;
+    }
 
-*{
-  box-sizing:border-box;
-}
+    body{
+      margin:0;
+      min-height:100vh;
+      background:var(--bg);
+      color:var(--text);
+      font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic","Yu Gothic UI",Meiryo,sans-serif;
+      line-height:1.6;
+    }
 
-html,body{
-  margin:0;
-  min-height:100%;
-  background:var(--bg);
-  color:var(--text);
-  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic","Yu Gothic UI",Meiryo,sans-serif;
-}
+    a{
+      color:inherit;
+      text-decoration:none;
+    }
 
-body{
-  min-height:100vh;
-  display:flex;
-  flex-direction:column;
-}
+    a:hover{
+      text-decoration:underline;
+    }
 
-.topbar{
-  height:58px;
-  display:flex;
-  align-items:center;
-  justify-content:flex-end;
-  gap:18px;
-  padding:0 22px;
-  font-size:13px;
-  color:#3c4043;
-}
+    .topbar{
+      height:54px;
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:18px;
+      padding:0 24px;
+      font-size:13px;
+      color:#3c4043;
+    }
 
-.topbar a{
-  color:#3c4043;
-  text-decoration:none;
-}
+    .topbar a{
+      color:#3c4043;
+    }
 
-.topbar a:hover{
-  text-decoration:underline;
-}
+    .app-dot{
+      width:32px;
+      height:32px;
+      border-radius:50%;
+      display:grid;
+      place-items:center;
+      color:#5f6368;
+      font-size:18px;
+    }
 
-.app-icon{
-  width:34px;
-  height:34px;
-  border-radius:50%;
-  display:grid;
-  place-items:center;
-  color:#5f6368;
-  cursor:pointer;
-}
+    .app-dot:hover{
+      background:#f1f3f4;
+      text-decoration:none;
+    }
 
-.app-icon:hover{
-  background:#f1f3f4;
-}
+    .profile-dot{
+      width:32px;
+      height:32px;
+      border-radius:50%;
+      background:linear-gradient(135deg,#6a8caf,#b8c6db);
+      display:grid;
+      place-items:center;
+      color:#fff;
+      font-weight:700;
+      font-size:13px;
+    }
 
-.avatar{
-  width:32px;
-  height:32px;
-  border-radius:50%;
-  background:linear-gradient(135deg,#e8f0fe,#fef7e0);
-  display:grid;
-  place-items:center;
-  color:#5f6368;
-  font-size:13px;
-  font-weight:700;
-}
+    .main{
+      min-height:calc(100vh - 54px);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      padding:86px 18px 36px;
+    }
 
-.main{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  padding:92px 20px 40px;
-}
+    .logo{
+      font-size:76px;
+      line-height:1;
+      font-weight:500;
+      letter-spacing:-.06em;
+      margin-bottom:28px;
+      user-select:none;
+    }
 
-.logo{
-  font-size:84px;
-  line-height:1;
-  font-weight:800;
-  letter-spacing:-.05em;
-  margin-bottom:30px;
-  user-select:none;
-}
+    .logo span:nth-child(1){color:#2f5d50;}
+    .logo span:nth-child(2){color:#4f7c68;}
+    .logo span:nth-child(3){color:#8a7a45;}
+    .logo span:nth-child(4){color:#355070;}
+    .logo span:nth-child(5){color:#6b705c;}
+    .logo span:nth-child(6){color:#9a6a4f;}
 
-.logo span:nth-child(1){color:#2f5d50;}
-.logo span:nth-child(2){color:#4f7c68;}
-.logo span:nth-child(3){color:#8a7a45;}
-.logo span:nth-child(4){color:#355070;}
-.logo span:nth-child(5){color:#6b705c;}
-.logo span:nth-child(6){color:#9a6a4f;}
+    .search-wrap{
+      width:min(584px,100%);
+      position:relative;
+    }
 
-.searchbox{
-  width:min(584px,100%);
-  height:46px;
-  border:1px solid #dfe1e5;
-  border-radius:24px;
-  display:flex;
-  align-items:center;
-  padding:0 14px;
-  gap:10px;
-  background:#fff;
-}
+    .searchbox{
+      height:46px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      display:flex;
+      align-items:center;
+      padding:0 14px;
+      background:#fff;
+      transition:box-shadow .16s,border-color .16s;
+    }
 
-.searchbox:hover,
-.searchbox:focus-within{
-  box-shadow:0 1px 6px rgba(32,33,36,.22);
-  border-color:rgba(223,225,229,0);
-}
+    .searchbox:hover,
+    .searchbox:focus-within{
+      box-shadow:var(--shadow);
+      border-color:transparent;
+    }
 
-.search-icon{
-  color:#9aa0a6;
-  font-size:17px;
-  flex-shrink:0;
-}
+    .search-icon{
+      color:#9aa0a6;
+      font-size:18px;
+      margin-right:10px;
+      transform:translateY(-1px);
+    }
 
-.searchbox input{
-  flex:1;
-  min-width:0;
-  border:0;
-  outline:0;
-  font:inherit;
-  font-size:16px;
-  color:#202124;
-  background:transparent;
-}
+    .searchbox input{
+      flex:1;
+      border:0;
+      outline:0;
+      font-size:16px;
+      background:transparent;
+      color:var(--text);
+      padding:0 4px;
+    }
 
-.mic{
-  color:#607d8b;
-  font-size:16px;
-  flex-shrink:0;
-}
+    .searchbox button{
+      border:0;
+      background:transparent;
+      color:#5f6368;
+      cursor:pointer;
+      font-size:13px;
+      padding:6px 10px;
+      border-radius:8px;
+    }
 
-.buttons{
-  margin-top:28px;
-  display:flex;
-  gap:12px;
-  flex-wrap:wrap;
-  justify-content:center;
-}
+    .searchbox button:hover{
+      background:#f1f3f4;
+    }
 
-.buttons button{
-  background:var(--btn);
-  border:1px solid var(--btn-border);
-  border-radius:4px;
-  color:#3c4043;
-  padding:9px 16px;
-  font-size:14px;
-  cursor:pointer;
-}
+    .buttons{
+      margin-top:28px;
+      display:flex;
+      justify-content:center;
+      gap:12px;
+    }
 
-.buttons button:hover{
-  border-color:#dadce0;
-  box-shadow:0 1px 1px rgba(0,0,0,.08);
-}
+    .buttons button{
+      border:1px solid #f8f9fa;
+      background:#f8f9fa;
+      color:#3c4043;
+      border-radius:4px;
+      padding:9px 16px;
+      font-size:14px;
+      cursor:pointer;
+    }
 
-.hint{
-  margin-top:22px;
-  color:#5f6368;
-  font-size:12px;
-  line-height:1.8;
-  text-align:center;
-}
+    .buttons button:hover{
+      border-color:#dadce0;
+      box-shadow:0 1px 1px rgba(0,0,0,.08);
+    }
 
-.results{
-  display:none;
-  width:min(720px,100%);
-  margin-top:36px;
-  border-top:1px solid #eef0f2;
-  padding-top:18px;
-}
+    #results{
+      display:none;
+      width:min(720px,100%);
+      margin-top:34px;
+      align-self:center;
+    }
 
-.result{
-  display:block;
-  padding:12px 0 15px;
-  text-decoration:none;
-  color:inherit;
-  border-bottom:1px solid #f0f2f5;
-}
+    .result-head{
+      color:#70757a;
+      font-size:13px;
+      border-bottom:1px solid #ebedef;
+      padding-bottom:10px;
+      margin-bottom:18px;
+    }
 
-.result:last-child{
-  border-bottom:0;
-}
+    .result{
+      margin:0 0 22px;
+    }
 
-.result-url{
-  color:#188038;
-  font-size:12px;
-  margin-bottom:3px;
-}
+    .result .url{
+      color:#202124;
+      font-size:12px;
+      margin-bottom:2px;
+    }
 
-.result-title{
-  color:#1a0dab;
-  font-size:20px;
-  line-height:1.35;
-  margin-bottom:4px;
-}
+    .result a{
+      color:#1a0dab;
+      font-size:20px;
+      line-height:1.3;
+      font-weight:400;
+    }
 
-.result:hover .result-title{
-  text-decoration:underline;
-}
+    .result .desc{
+      color:#4d5156;
+      font-size:14px;
+      margin-top:4px;
+    }
 
-.result-desc{
-  color:#4d5156;
-  font-size:14px;
-  line-height:1.65;
-}
+    .no-result{
+      color:#4d5156;
+      font-size:14px;
+      padding:8px 0;
+    }
 
-.no-result{
-  color:#5f6368;
-  font-size:14px;
-  line-height:1.8;
-  padding:14px 0;
-}
+    .homeblocks{
+      width:min(680px,100%);
+      margin-top:42px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:14px;
+    }
 
-.footer{
-  background:#f2f2f2;
-  color:#70757a;
-  font-size:12px;
-  padding:14px 24px;
-  text-align:center;
-  line-height:1.7;
-}
+    .home-section{
+      min-width:0;
+    }
 
-/* intro overlay */
+    .section-title{
+      font-size:12px;
+      color:#70757a;
+      margin:0 0 8px 4px;
+    }
 
-.intro-overlay{
-  position:fixed;
-  inset:0;
-  z-index:9999;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:36px 16px;
-  background:
-    linear-gradient(rgba(8,12,18,.58), rgba(8,12,18,.68)),
-    url("20260417_sugimoriyama_02.jpg") center center / cover no-repeat fixed;
-  color:#f5f7fa;
-}
+    .suggest-card{
+      display:block;
+      border:1px solid #e0e3e7;
+      border-radius:12px;
+      background:#fff;
+      padding:14px 16px;
+      min-height:104px;
+      transition:box-shadow .15s,border-color .15s,transform .15s;
+    }
 
-.intro-overlay.hide{
-  display:none;
-}
+    .suggest-card:hover{
+      text-decoration:none;
+      box-shadow:0 3px 12px rgba(60,64,67,.16);
+      border-color:#d5d9de;
+      transform:translateY(-1px);
+    }
 
-.intro-panel{
-  width:min(760px,100%);
-  background:rgba(15,20,28,.58);
-  border:1px solid rgba(255,255,255,.12);
-  border-radius:28px;
-  box-shadow:0 20px 60px rgba(0,0,0,.35);
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
-  padding:34px 30px 24px;
-}
+    .suggest-card .label{
+      font-size:11px;
+      color:#70757a;
+      margin-bottom:5px;
+    }
 
-.intro-kicker{
-  font-size:12px;
-  letter-spacing:.14em;
-  text-transform:uppercase;
-  color:rgba(255,255,255,.68);
-  margin-bottom:10px;
-}
+    .suggest-card h3{
+      margin:0 0 6px;
+      color:#202124;
+      font-size:15px;
+      line-height:1.45;
+      font-weight:500;
+    }
 
-.intro-panel h1{
-  margin:0 0 18px;
-  font-size:34px;
-  line-height:1.35;
-  font-weight:900;
-}
+    .suggest-card p{
+      margin:0;
+      color:#5f6368;
+      font-size:12px;
+      line-height:1.55;
+    }
 
-.intro-text{
-  font-size:15px;
-  line-height:2.05;
-  color:rgba(255,255,255,.78);
-}
+    .suggest-card.local h3{
+      color:#1a0dab;
+    }
 
-.intro-text p{
-  margin:0 0 16px;
-}
+    .suggest-card.history{
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
 
-.intro-last-message{
-  margin:12px 0;
-  color:#fff;
-  font-size:18px;
-  line-height:1.8;
-  font-weight:900;
-}
+    .history-title{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      color:#202124;
+      font-size:15px;
+      font-weight:500;
+    }
 
-.intro-notice-title{
-  margin-top:10px;
-  color:#ff8b8b;
-  font-size:18px;
-  line-height:1.8;
-  font-weight:900;
-}
+    .history-title::before{
+      content:"🕘";
+      font-size:15px;
+      opacity:.75;
+    }
 
-.intro-place{
-  color:#fff;
-  font-weight:800;
-}
+    .footer{
+      margin-top:auto;
+      padding-top:56px;
+      color:#70757a;
+      font-size:12px;
+      text-align:center;
+    }
 
-.intro-bottom{
-  margin-top:28px;
-  padding-top:20px;
-  border-top:1px solid rgba(255,255,255,.16);
-  display:flex;
-  flex-wrap:wrap;
-  align-items:center;
-  justify-content:space-between;
-  gap:14px;
-}
+    /* opening overlay */
 
-.intro-note{
-  font-size:12px;
-  line-height:1.8;
-  color:rgba(255,255,255,.68);
-}
+    .intro-overlay{
+      position:fixed;
+      inset:0;
+      z-index:9999;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:36px 16px;
+      background:
+        linear-gradient(rgba(8,12,18,.58), rgba(8,12,18,.68)),
+        url("20260417_sugimoriyama_02.jpg") center center / cover no-repeat fixed;
+      color:#f5f7fa;
+    }
 
-.intro-start{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  padding:14px 24px;
-  border:0;
-  border-radius:999px;
-  background:#fff;
-  color:#1f2328;
-  font-size:15px;
-  font-weight:900;
-  cursor:pointer;
-  box-shadow:0 10px 24px rgba(0,0,0,.18);
-}
+    .intro-overlay.hide{
+      display:none;
+    }
 
-.intro-start:hover{
-  transform:translateY(-1px);
-  opacity:.96;
-}
+    .intro-panel{
+      width:min(760px,100%);
+      background:rgba(15,20,28,.58);
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:28px;
+      box-shadow:0 20px 60px rgba(0,0,0,.35);
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+      padding:34px 30px 24px;
+    }
 
-.intro-footer{
-  margin-top:22px;
-  text-align:center;
-  font-size:11px;
-  line-height:1.8;
-  color:rgba(255,255,255,.56);
-}
+    .intro-kicker{
+      font-size:12px;
+      letter-spacing:.14em;
+      text-transform:uppercase;
+      color:rgba(255,255,255,.68);
+      margin-bottom:10px;
+    }
 
-@media(max-width:640px){
-  .main{
-    padding-top:74px;
-  }
+    .intro-panel h1{
+      margin:0 0 18px;
+      font-size:34px;
+      line-height:1.35;
+      font-weight:900;
+    }
 
-  .logo{
-    font-size:64px;
-    margin-bottom:26px;
-  }
+    .intro-text{
+      font-size:15px;
+      line-height:2.05;
+      color:rgba(255,255,255,.78);
+    }
 
-  .intro-overlay{
-    align-items:flex-start;
-    padding:18px 12px;
-  }
+    .intro-text p{
+      margin:0 0 16px;
+    }
 
-  .intro-panel{
-    padding:26px 20px 20px;
-  }
+    .intro-last-message{
+      margin:12px 0;
+      color:#fff;
+      font-size:18px;
+      line-height:1.8;
+      font-weight:900;
+    }
 
-  .intro-panel h1{
-    font-size:28px;
-  }
+    .intro-notice-title{
+      margin-top:10px;
+      color:#ff8b8b;
+      font-size:18px;
+      line-height:1.8;
+      font-weight:900;
+    }
 
-  .intro-text{
-    font-size:14px;
-    line-height:2;
-  }
+    .intro-place{
+      color:#fff;
+      font-weight:800;
+    }
 
-  .intro-last-message,
-  .intro-notice-title{
-    font-size:16px;
-  }
+    .intro-bottom{
+      margin-top:28px;
+      padding-top:20px;
+      border-top:1px solid rgba(255,255,255,.16);
+      display:flex;
+      flex-wrap:wrap;
+      align-items:center;
+      justify-content:space-between;
+      gap:14px;
+    }
 
-  .intro-bottom{
-    display:block;
-  }
+    .intro-note{
+      font-size:12px;
+      line-height:1.8;
+      color:rgba(255,255,255,.68);
+    }
 
-  .intro-start{
-    width:100%;
-    margin-top:14px;
-  }
-}
-</style>
+    .intro-start{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:14px 24px;
+      border:0;
+      border-radius:999px;
+      background:#fff;
+      color:#1f2328;
+      font-size:15px;
+      font-weight:900;
+      cursor:pointer;
+      box-shadow:0 10px 24px rgba(0,0,0,.18);
+    }
+
+    .intro-start:hover{
+      transform:translateY(-1px);
+      opacity:.96;
+    }
+
+    .intro-footer{
+      margin-top:22px;
+      text-align:center;
+      font-size:11px;
+      line-height:1.8;
+      color:rgba(255,255,255,.56);
+    }
+
+    @media(max-width:720px){
+      .main{
+        padding-top:70px;
+      }
+
+      .logo{
+        font-size:58px;
+        margin-bottom:24px;
+      }
+
+      .homeblocks{
+        grid-template-columns:1fr;
+        margin-top:34px;
+      }
+
+      .buttons{
+        margin-top:22px;
+      }
+
+      .buttons button{
+        font-size:13px;
+        padding:8px 12px;
+      }
+
+      .topbar{
+        padding:0 14px;
+        gap:12px;
+      }
+    }
+
+    @media(max-width:640px){
+      .intro-overlay{
+        align-items:flex-start;
+        padding:18px 12px;
+      }
+
+      .intro-panel{
+        padding:26px 20px 20px;
+      }
+
+      .intro-panel h1{
+        font-size:28px;
+      }
+
+      .intro-text{
+        font-size:14px;
+        line-height:2;
+      }
+
+      .intro-last-message,
+      .intro-notice-title{
+        font-size:16px;
+      }
+
+      .intro-bottom{
+        display:block;
+      }
+
+      .intro-start{
+        width:100%;
+        margin-top:14px;
+      }
+    }
+  </style>
 </head>
 
 <body>
+  <div id="introOverlay" class="intro-overlay">
+    <div class="intro-panel">
+      <div class="intro-kicker">Sugimori ARG / Prologue</div>
+      <h1>遥が消えた。</h1>
 
-<div id="introOverlay" class="intro-overlay">
-  <div class="intro-panel">
-    <div class="intro-kicker">Sugimori ARG / Prologue</div>
-    <h1>遥が消えた。</h1>
+      <div class="intro-text">
+        <p>杉谷遥とは、十年前にネットで知り合った。<br>
+        同じ怪談好きとして話が合い、気づけば長い間、くだらない話から少し真面目な話まで送り合うようになっていた。</p>
 
-    <div class="intro-text">
-      <p>杉谷遥とは、十年前にネットで知り合った。<br>
-      同じ怪談好きとして話が合い、気づけば長い間、くだらない話から少し真面目な話まで送り合うようになっていた。</p>
+        <p>けれど二日前の朝、彼女は突然消えた。最後に届いたのは、</p>
 
-      <p>けれど二日前の朝、彼女は突然消えた。最後に届いたのは、</p>
+        <div class="intro-last-message">「もし私が消えたら、探しに来てくれる？」</div>
 
-      <div class="intro-last-message">「もし私が消えたら、探しに来てくれる？」</div>
+        <p>という一文だけだった。</p>
 
-      <p>という一文だけだった。</p>
+        <p>彼女を探すため、あなたはここに来た。遥が暮らしているという<span class="intro-place">杉守村</span>へ近づいた、その時ーー<br>
+        スマートフォンに、一件のローカル通知が届く。</p>
 
-      <p>彼女を探すため、あなたはここに来た。遥が暮らしているという<span class="intro-place">杉守村</span>へ近づいた、その時ーー<br>
-      スマートフォンに、一件のローカル通知が届く。</p>
-
-      <div class="intro-notice-title">「杉守山のこの一帯、墓標みたいに見えるんだけど、何か知ってる人いますか？」</div>
-    </div>
-
-    <div class="intro-bottom">
-      <div class="intro-note">
-        Moorii で情報を探してください。<br>
-        検索結果やページ内リンクをたどることで調査が進みます。
+        <div class="intro-notice-title">「杉守山のこの一帯、墓標みたいに見えるんだけど、何か知ってる人いますか？」</div>
       </div>
-      <button class="intro-start" onclick="closeIntro()">Mooriiを開く →</button>
-    </div>
 
-    <div class="intro-footer">
-      このゲームは完全なフィクションです。実在の人物・団体・地名・事件などとは一切関係ありません。
-    </div>
-  </div>
-</div>
-
-<header class="topbar">
-  <a href="chat_home.html">Talk</a>
-  <a href="forum.html">知新</a>
-  <div class="app-icon">⋮⋮</div>
-  <div class="avatar">G</div>
-</header>
-
-<main class="main">
-  <div class="logo" aria-label="Moorii">
-    <span>M</span><span>o</span><span>o</span><span>r</span><span>i</span><span>i</span>
-  </div>
-
-  <form class="searchbox" onsubmit="doSearch();return false;">
-    <div class="search-icon">⌕</div>
-    <input id="q" autocomplete="off" placeholder="Mooriiで検索">
-    <div class="mic">●</div>
-  </form>
-
-  <div class="buttons">
-    <button onclick="doSearch()">検索</button>
-    <button onclick="lucky()">I'm Feeling Curious</button>
-  </div>
-
-  <div class="hint">
-    ヒント：気になる言葉を検索してください。<br>
-    例：杉守山、杉鳴神社、杉谷遥、高城真紀
-  </div>
-
-  <section id="results" class="results"></section>
-</main>
-
-<footer class="footer">
-  このゲームは完全なフィクションです。実在の人物・団体・地名・事件などとは一切関係ありません。
-</footer>
-
-<script>
-function closeIntro(){
-  sessionStorage.setItem("introSeen", "true");
-  document.getElementById("introOverlay").classList.add("hide");
-}
-
-window.addEventListener("DOMContentLoaded", function(){
-  if(sessionStorage.getItem("introSeen") === "true"){
-    document.getElementById("introOverlay").classList.add("hide");
-  }
-});
-
-function normalize(text){
-  return text.trim().replace(/\s+/g,"").toLowerCase();
-}
-
-function doSearch(){
-  const raw = document.getElementById("q").value;
-  const q = normalize(raw);
-  const box = document.getElementById("results");
-
-  if(!q){
-    box.style.display = "block";
-    box.innerHTML = `<div class="no-result">検索語を入力してください。</div>`;
-    return;
-  }
-
-  const results = [];
-
-  if(q.includes("杉守山") || q.includes("杉守村") || q.includes("墓標") || q.includes("墓") || q.includes("白い")){
-    results.push({
-      title:"杉守山のこの一帯、墓標みたいに見えるんだけど、何か知ってる人いますか？ - 知新",
-      url:"chishin.local/question/1049382",
-      desc:"杉守山の林道付近で撮影された写真についてのローカル掲示板投稿。添付画像あり。",
-      link:"forum.html"
-    });
-  }
-
-  if(q.includes("杉鳴神社") || q.includes("杉鳴")){
-    results.push({
-      title:"杉鳴神社について - 知新",
-      url:"chishin.local/topic/suginari",
-      desc:"杉守村の周辺で語られる神社・信仰に関する投稿。現在、一部キャッシュ表示のみ。",
-      link:"forum.html"
-    });
-  }
-
-  if(q.includes("杉谷遥") || q.includes("遥") || q.includes("haruka")){
-    results.push({
-      title:"杉谷 遥（🍰06/17） - Talk Profile",
-      url:"talk.local/profile/haruka_s",
-      desc:"杉谷遥のプロフィールページ。最近の投稿と最終ログイン情報。",
-      link:"profile_haruka.html"
-    });
-    results.push({
-      title:"トーク - 杉谷遥",
-      url:"talk.local/chat/haruka_s",
-      desc:"杉谷遥との過去の会話ログ。",
-      link:"chat.html"
-    });
-  }
-
-  if(q.includes("高城真紀") || q.includes("高城") || q.includes("真紀") || q.includes("maki")){
-    results.push({
-      title:"友だち追加 - Talk",
-      url:"talk.local/add-friend",
-      desc:"ユーザー検索から高城真紀へ連絡できます。",
-      link:"add_friend.html"
-    });
-  }
-
-  if(q.includes("神隠し")){
-    results.push({
-      title:"杉守山の神隠し怪談について",
-      url:"moorii.cache/occult/sugimori",
-      desc:"杉守山周辺で語られている怪談に関する断片的な記録。",
-      link:"forum.html"
-    });
-  }
-
-  if(q.includes("巡山祭") || q.includes("祭り")){
-    results.push({
-      title:"杉守村の祭りについて",
-      url:"moorii.cache/local/festival",
-      desc:"杉守村に残る古い祭りについての検索結果。詳しい情報は制限されています。",
-      link:"forum.html"
-    });
-  }
-
-  if(results.length === 0){
-    box.style.display = "block";
-    box.innerHTML = `
-      <div class="no-result">
-        「${raw}」に一致する検索結果は見つかりませんでした。<br>
-        別の言葉で検索してください。
+      <div class="intro-bottom">
+        <div class="intro-note">
+          Moorii で情報を探してください。<br>
+          検索結果やページ内リンクをたどることで調査が進みます。
+        </div>
+        <button class="intro-start" onclick="closeIntro()">Mooriiを開く →</button>
       </div>
-    `;
-    return;
-  }
 
-  box.style.display = "block";
-  box.innerHTML = results.map(r => `
-    <a class="result" href="${r.link}">
-      <div class="result-url">${r.url}</div>
-      <div class="result-title">${r.title}</div>
-      <div class="result-desc">${r.desc}</div>
-    </a>
-  `).join("");
-}
+      <div class="intro-footer">
+        このゲームは完全なフィクションです。実在の人物・団体・地名・事件などとは一切関係ありません。
+      </div>
+    </div>
+  </div>
 
-function lucky(){
-  document.getElementById("q").value = "杉守山";
-  doSearch();
-}
-</script>
+  <header class="topbar">
+    <a href="#">地域情報</a>
+    <a href="#">アーカイブ</a>
+    <a class="app-dot" href="#" aria-label="apps">⋮⋮</a>
+    <div class="profile-dot">M</div>
+  </header>
 
+  <main class="main">
+    <div class="logo" aria-label="Moorii">
+      <span>M</span><span>o</span><span>o</span><span>r</span><span>i</span><span>i</span>
+    </div>
+
+    <div class="search-wrap">
+      <div class="searchbox">
+        <span class="search-icon">⌕</span>
+        <input id="q" placeholder="検索ワードを入力..." autocomplete="off" onkeydown="if(event.key==='Enter')search()">
+        <button onclick="search()">検索</button>
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button onclick="search()">Moorii 検索</button>
+      <button onclick="document.getElementById('q').value='杉守村';search()">地域のおすすめ</button>
+    </div>
+
+    <section id="results"></section>
+
+    <section class="homeblocks" id="homeblocks">
+      <div class="home-section">
+        <div class="section-title">地域の話題</div>
+        <a class="suggest-card local" href="forum.html">
+          <div class="label">ura-navi.example/thread/1049382</div>
+          <h3>【画像】この山、全部墓みたいなんだが…</h3>
+          <p>京都山中で撮影された白い林について語る匿名掲示板の投稿。</p>
+        </a>
+      </div>
+
+      <div class="home-section">
+        <div class="section-title">最近開いたページ</div>
+        <a class="suggest-card history" href="chat.html">
+          <div class="label">local/chat/haruka</div>
+          <div class="history-title">杉谷遥とのチャットログ</div>
+          <p style="margin-top:8px;">保存された個人チャットの記録。</p>
+        </a>
+      </div>
+    </section>
+
+    <div class="footer">このゲームは完全なフィクションです。実在の人物・団体・地名・事件などとは一切関係ありません。</div>
+  </main>
+
+  <script>
+    function closeIntro(){
+      sessionStorage.setItem("introSeen", "true");
+      document.getElementById("introOverlay").classList.add("hide");
+    }
+
+    window.addEventListener("DOMContentLoaded", function(){
+      if(sessionStorage.getItem("introSeen") === "true"){
+        document.getElementById("introOverlay").classList.add("hide");
+      }
+    });
+
+    const data=[
+      {
+        keys:["杉守村","杉守"],
+        title:"【攻略】小さな観光地・杉守村",
+        desc:"杉守山の麓にある小さな村。近年は杉鳴神社を中心に観光客も増えている。",
+        url:"travel.local/sugimori-village",
+        link:"village.html"
+      },
+      {
+        
+        keys:["杉鳴様","杉鳴神社"],
+        title:"杉鳴神社 公式案内",
+        desc:"杉守山に鎮座する小さな神社。杉鳴神を祀るとされる。",
+        url:"suginari-shrine.example",
+        link:"shrine.html"
+
+      },
+      {
+        keys:["巡山祭"],
+        title:"巡山祭について",
+        desc:"杉守村で毎年行われる祭礼。一般公開されるのは奉納舞と酒造りまで。",
+        url:"suginari-shrine.example/festival",
+        link:"festival.html"
+      },
+      {
+        keys:["私立北杉高校","北杉高校"],
+        title:"私立北杉高校",
+        desc:"杉守村にある小規模な私立高校。村と密接な関係を持つ。",
+        url:"kitasugi-high.example",
+        link:"school.html"
+      },
+      {
+        keys:["榊病院"],
+        title:"榊病院 公式サイト",
+        desc:"杉守村周辺の地域医療を担う病院。",
+        url:"sakaki-hospital.example",
+        link:"hospital.html"
+      },
+      {
+        keys:["榊隆文","榊"],
+        title:"榊隆文 医師紹介",
+        desc:"榊病院の現院長。地域医療支援に尽力している。",
+        url:"sakaki-hospital.example/director",
+        link:"sakaki.html"
+      },
+      {
+        keys:["榊隆文","榊"],
+        title:"「名門出身の医師、山間地域を支える」",
+        desc:"地域医療に携わる榊隆文医師へのインタビュー記事。",
+        url:"local-interview.example/sakaki",
+        link:"sakaki_interview.html"
+      },
+      {
+        keys:["杉守村土地購入及び使用記録","土地購入","使用記録"],
+        title:"杉守村土地購入及び使用記録",
+        desc:"過去の土地利用申請と建築記録。",
+        url:"sugimori-village.example/records/land",
+        link:"land.html"
+      }
+    ];
+
+    function search(){
+      const q=document.getElementById('q').value.trim();
+      const box=document.getElementById('results');
+      const home=document.getElementById('homeblocks');
+
+      if(!q){
+        box.style.display='none';
+        home.style.display='grid';
+        return;
+      }
+
+      const res=data
+        .filter(r=>r.keys.some(k=>q.includes(k)||k.includes(q)))
+        .slice(0,3);
+
+      box.style.display='block';
+      home.style.display='none';
+
+      if(!res.length){
+        box.innerHTML=`
+          <div class="result-head">検索結果</div>
+          <div class="no-result">該当する検索結果はありません。</div>
+        `;
+        return;
+      }
+
+      box.innerHTML=`
+        <div class="result-head">約 ${res.length} 件の検索結果</div>
+        ${res.map(r=>`
+          <div class="result">
+            <div class="url">${r.url}</div>
+            <a href="${r.link}">${r.title}</a>
+            <div class="desc">${r.desc}</div>
+          </div>
+        `).join('')}
+      `;
+    }
+  </script>
 </body>
 </html>
