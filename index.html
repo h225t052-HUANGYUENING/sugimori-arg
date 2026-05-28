@@ -161,6 +161,7 @@
       display:flex;
       justify-content:center;
       gap:12px;
+      flex-wrap:wrap;
     }
 
     .buttons button{
@@ -228,6 +229,10 @@
       display:grid;
       grid-template-columns:1fr 1fr;
       gap:14px;
+    }
+
+    .homeblocks.single{
+      grid-template-columns:1fr;
     }
 
     .home-section{
@@ -301,6 +306,15 @@
       content:"🕘";
       font-size:15px;
       opacity:.75;
+    }
+
+    .empty-history{
+      border:1px solid #e0e3e7;
+      border-radius:12px;
+      padding:18px 16px;
+      color:#70757a;
+      font-size:13px;
+      background:#fff;
     }
 
     .footer{
@@ -556,31 +570,14 @@
     </div>
 
     <div class="buttons">
-      <button onclick="search()">Moorii 検索</button>
-      <button onclick="document.getElementById('q').value='杉守村';search()">地域のおすすめ</button>
+      <button onclick="showSavedPage()">保存済みページ</button>
+      <button onclick="showRegionalRecommendation()">地域のおすすめ</button>
+      <button onclick="showHistory()">履歴</button>
     </div>
 
     <section id="results"></section>
 
-    <section class="homeblocks" id="homeblocks">
-      <div class="home-section">
-        <div class="section-title">地域の話題</div>
-        <a class="suggest-card local" href="forum.html">
-          <div class="label">ura-navi.example/thread/1049382</div>
-          <h3>【画像】この山、全部墓みたいなんだが…</h3>
-          <p>京都山中で撮影された白い林について語る匿名掲示板の投稿。</p>
-        </a>
-      </div>
-
-      <div class="home-section">
-        <div class="section-title">最近開いたページ</div>
-        <a class="suggest-card history" href="chat.html">
-          <div class="label">local/chat/haruka</div>
-          <div class="history-title">杉谷遥とのチャットログ</div>
-          <p style="margin-top:8px;">保存された個人チャットの記録。</p>
-        </a>
-      </div>
-    </section>
+    <section class="homeblocks single" id="homeblocks"></section>
 
     <div class="footer">このゲームは完全なフィクションです。実在の人物・団体・地名・事件などとは一切関係ありません。</div>
   </main>
@@ -595,6 +592,8 @@
       if(sessionStorage.getItem("introSeen") === "true"){
         document.getElementById("introOverlay").classList.add("hide");
       }
+
+      showSavedPage();
     });
 
     const data=[
@@ -606,7 +605,7 @@
         link:"village.html"
       },
       {
-        
+
         keys:["杉鳴様","杉鳴神社"],
         title:"杉鳴神社 公式案内",
         desc:"杉守山に鎮座する小さな神社。杉鳴神を祀るとされる。",
@@ -658,6 +657,113 @@
       }
     ];
 
+    function recordPage(title,url,link,desc){
+      const key="mooriiHistory";
+      const item={title:title,url:url,link:link,desc:desc};
+      let history=[];
+
+      try{
+        history=JSON.parse(localStorage.getItem(key))||[];
+      }catch(e){
+        history=[];
+      }
+
+      history=history.filter(h=>h.link!==link);
+      history.unshift(item);
+      history=history.slice(0,6);
+      localStorage.setItem(key,JSON.stringify(history));
+    }
+
+    function escapeQuote(str){
+      return String(str).replace(/\\/g,"\\\\").replace(/'/g,"\\'");
+    }
+
+    function cardHTML(sectionTitle, cardClass, label, title, desc, link){
+      return `
+        <div class="home-section">
+          <div class="section-title">${sectionTitle}</div>
+          <a class="suggest-card ${cardClass}" href="${link}" onclick="recordPage('${escapeQuote(title)}','${escapeQuote(label)}','${escapeQuote(link)}','${escapeQuote(desc)}')">
+            <div class="label">${label}</div>
+            <h3>${title}</h3>
+            <p>${desc}</p>
+          </a>
+        </div>
+      `;
+    }
+
+    function clearSearchResults(){
+      document.getElementById('results').style.display='none';
+      document.getElementById('results').innerHTML='';
+    }
+
+    function showSavedPage(){
+      clearSearchResults();
+      const home=document.getElementById('homeblocks');
+      home.className='homeblocks single';
+      home.style.display='grid';
+      home.innerHTML=`
+        <div class="home-section">
+          <div class="section-title">保存済みページ</div>
+          <a class="suggest-card history" href="chat.html" onclick="recordPage('杉谷遥とのチャットログ','local/chat/haruka','chat.html','保存された個人チャットの記録。')">
+            <div class="label">local/chat/haruka</div>
+            <div class="history-title">杉谷遥とのチャットログ</div>
+            <p style="margin-top:8px;">保存された個人チャットの記録。</p>
+          </a>
+        </div>
+      `;
+    }
+
+    function showRegionalRecommendation(){
+      clearSearchResults();
+      const home=document.getElementById('homeblocks');
+      home.className='homeblocks single';
+      home.style.display='grid';
+      home.innerHTML=cardHTML(
+        '地域の話題',
+        'local',
+        'ura-navi.example/thread/1049382',
+        '【画像】この山、全部墓みたいなんだが…',
+        '京都山中で撮影された白い林について語る匿名掲示板の投稿。',
+        'forum.html'
+      );
+    }
+
+    function showHistory(){
+      clearSearchResults();
+      const home=document.getElementById('homeblocks');
+      home.className='homeblocks single';
+      home.style.display='grid';
+
+      let history=[];
+      try{
+        history=JSON.parse(localStorage.getItem("mooriiHistory"))||[];
+      }catch(e){
+        history=[];
+      }
+
+      if(!history.length){
+        home.innerHTML=`
+          <div class="home-section">
+            <div class="section-title">履歴</div>
+            <div class="empty-history">まだ履歴はありません。検索結果やカードを開くと、ここに表示されます。</div>
+          </div>
+        `;
+        return;
+      }
+
+      home.className='homeblocks';
+      home.innerHTML=history.map(item=>`
+        <div class="home-section">
+          <div class="section-title">履歴</div>
+          <a class="suggest-card history" href="${item.link}" onclick="recordPage('${escapeQuote(item.title)}','${escapeQuote(item.url)}','${escapeQuote(item.link)}','${escapeQuote(item.desc)}')">
+            <div class="label">${item.url}</div>
+            <div class="history-title">${item.title}</div>
+            <p style="margin-top:8px;">${item.desc}</p>
+          </a>
+        </div>
+      `).join('');
+    }
+
     function search(){
       const q=document.getElementById('q').value.trim();
       const box=document.getElementById('results');
@@ -665,7 +771,7 @@
 
       if(!q){
         box.style.display='none';
-        home.style.display='grid';
+        showSavedPage();
         return;
       }
 
@@ -689,7 +795,7 @@
         ${res.map(r=>`
           <div class="result">
             <div class="url">${r.url}</div>
-            <a href="${r.link}">${r.title}</a>
+            <a href="${r.link}" onclick="recordPage('${escapeQuote(r.title)}','${escapeQuote(r.url)}','${escapeQuote(r.link)}','${escapeQuote(r.desc)}')">${r.title}</a>
             <div class="desc">${r.desc}</div>
           </div>
         `).join('')}
