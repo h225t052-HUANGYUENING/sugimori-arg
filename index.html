@@ -818,35 +818,6 @@
     `).join('')}
   `;
 }
-    ];
-  }else{
-    res=data
-      .filter(r=>r.keys.some(k=>q.includes(k)||k.includes(q)))
-      .slice(0,3);
-  }
-
-  box.style.display='block';
-  home.style.display='none';
-
-  if(!res.length){
-    box.innerHTML=`
-      <div class="result-head">検索結果</div>
-      <div class="no-result">該当する検索結果はありません。</div>
-    `;
-    return;
-  }
-
-  box.innerHTML=`
-    <div class="result-head">約 ${res.length} 件の検索結果</div>
-    ${res.map(r=>`
-      <div class="result">
-        <div class="url">${r.url}</div>
-        <a href="${r.link}" onclick="recordPage('${escapeQuote(r.title)}','${escapeQuote(r.url)}','${escapeQuote(r.link)}','${escapeQuote(r.desc)}')">${r.title}</a>
-        <div class="desc">${r.desc}</div>
-      </div>
-    `).join('')}
-  `;
-}
   </script>
 </body>
 </html>
