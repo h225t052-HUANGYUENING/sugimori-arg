@@ -1056,10 +1056,10 @@ a:hover{text-decoration:underline;}
         </div>
 
         <div class="question-meta">
-          <span>2026/06/03 投稿</span>
-          <span>閲覧 8</span>
-          <span>回答 4</span>
-          <span>コメント 6</span>
+          <span>2026/04/17 投稿</span>
+          <span>閲覧 12,408</span>
+          <span>回答 12</span>
+          <span>コメント 57</span>
           <span>キャッシュ表示</span>
         </div>
 
@@ -1108,7 +1108,7 @@ a:hover{text-decoration:underline;}
     </section>
 
     <div class="answer-header">
-      <div class="answer-count">4件の回答</div>
+      <div class="answer-count">12件の回答</div>
       <div class="sorts">
         <span class="active">おすすめ順</span>
         <span>新しい順</span>
@@ -1357,9 +1357,9 @@ a:hover{text-decoration:underline;}
     <section class="side-card">
       <div class="side-title">この質問の状態</div>
       <div class="status-grid">
-        <div class="status-row"><span>閲覧数</span><span>8</span></div>
-        <div class="status-row"><span>回答</span><span>4</span></div>
-        <div class="status-row"><span>コメント</span><span>6</span></div>
+        <div class="status-row"><span>閲覧数</span><span>12,408</span></div>
+        <div class="status-row"><span>回答</span><span>12</span></div>
+        <div class="status-row"><span>コメント</span><span>57</span></div>
         <div class="status-row"><span>状態</span><span>キャッシュ</span></div>
       </div>
     </section>
@@ -1376,9 +1376,9 @@ a:hover{text-decoration:underline;}
     <section class="side-card">
       <div class="side-title">閲覧中のユーザー</div>
       <div class="side-list">
-        <div class="side-item">ゲスト 5人</div>
-        <div class="side-item">ログインユーザー 1人</div>
-        <div class="side-item">非表示ユーザー 0人</div>
+        <div class="side-item">ゲスト 12人</div>
+        <div class="side-item">ログインユーザー 3人</div>
+        <div class="side-item">非表示ユーザー 1人</div>
       </div>
     </section>
 
@@ -1486,9 +1486,11 @@ function closeImage(){
 
 let isLoggedIn = false;
 let originalMainHTML = "";
+let originalSidebarHTML = "";
 
 window.addEventListener("DOMContentLoaded", function(){
   originalMainHTML = document.querySelector(".main").innerHTML;
+  originalSidebarHTML = document.querySelector(".sidebar").innerHTML;
 });
 
 function fakeSearch(){
@@ -1579,7 +1581,49 @@ function openSecretFestivalPost(){
 
 function restoreMainThread(){
   document.querySelector(".main").innerHTML = originalMainHTML;
+  document.querySelector(".sidebar").innerHTML = originalSidebarHTML;
   window.scrollTo(0,0);
+}
+
+function festivalSidebarHTML(){
+  return `
+    <section class="side-card">
+      <div class="side-title">この質問の状態</div>
+      <div class="status-grid">
+        <div class="status-row"><span>閲覧数</span><span>8</span></div>
+        <div class="status-row"><span>回答</span><span>0</span></div>
+        <div class="status-row"><span>コメント</span><span>0</span></div>
+        <div class="status-row"><span>状態</span><span>削除済み</span></div>
+      </div>
+    </section>
+
+    <section class="side-card">
+      <div class="side-title">知新からのお知らせ</div>
+      <div class="side-list">
+        <div class="side-item">一部の古い質問はキャッシュとして表示されます。</div>
+        <div class="side-item">システムメンテナンス中のため、新規登録は現在停止中です。</div>
+        <div class="side-item">削除済み投稿の閲覧にはログインが必要です。</div>
+      </div>
+    </section>
+
+    <section class="side-card">
+      <div class="side-title">閲覧中のユーザー</div>
+      <div class="side-list">
+        <div class="side-item">ゲスト 5人</div>
+        <div class="side-item">ログインユーザー 1人</div>
+        <div class="side-item">非表示ユーザー 0人</div>
+      </div>
+    </section>
+
+    <section class="side-card">
+      <div class="side-title">おすすめの質問</div>
+      <div class="side-list">
+        <div class="side-item">旅行先で見つけた変な看板、意味分かる人いますか？</div>
+        <div class="side-item">古い神社の写真を撮る時に気をつけること</div>
+        <div class="side-item">山道で迷わないための基本装備</div>
+      </div>
+    </section>
+  `;
 }
 
 function festivalBodyHTML(canRead){
@@ -1635,9 +1679,9 @@ function renderFestivalPost(canRead){
         </div>
 
         <div class="question-meta">
-          <span>2016/04/25 投稿</span>
+          <span>2026/06/03 投稿</span>
           <span>投稿者：maki</span>
-          <span>閲覧 3,126</span>
+          <span>閲覧 8</span>
           <span>回答 0</span>
           <span>コメント 0</span>
           <span>キャッシュ表示</span>
@@ -1649,7 +1693,7 @@ function renderFestivalPost(canRead){
               <div class="avatar gray">m</div>
               <div>
                 <div class="user-name">maki</div>
-                <div class="user-desc">投稿者・2016/04/25 23:41</div>
+                <div class="user-desc">投稿者・2026/06/03 23:41</div>
               </div>
             </div>
             <button class="follow-btn" onclick="needLogin()">フォロー</button>
@@ -1683,6 +1727,7 @@ function renderFestivalPost(canRead){
       </article>
     </section>
   `;
+  document.querySelector(".sidebar").innerHTML = festivalSidebarHTML();
   window.scrollTo(0,0);
 }
 
