@@ -167,6 +167,10 @@ a{
   background:#fbfcfd;
 }
 
+.user-card.static:hover{
+  background:#fff;
+}
+
 .avatar{
   width:46px;
   height:46px;
@@ -177,6 +181,26 @@ a{
   font-size:22px;
   flex-shrink:0;
   overflow:hidden;
+}
+
+.avatar.doctor{
+  background:linear-gradient(135deg,#dcebef,#ffffff);
+  color:#315f8f;
+  font-weight:800;
+  font-size:18px;
+}
+
+.avatar.haruka{
+  background:linear-gradient(135deg,#ffe4ef,#f8fafc);
+  color:#c05d7d;
+  font-size:20px;
+}
+
+.avatar.mashiro{
+  background:linear-gradient(135deg,#f3f4f6,#e5e7eb);
+  color:#8b2635;
+  font-size:18px;
+  font-weight:800;
 }
 
 .avatar img{
@@ -216,6 +240,84 @@ a{
   color:#7b8794;
   font-size:13px;
   line-height:1.7;
+}
+
+.already{
+  margin-top:10px;
+  background:#f0fff5;
+  border:1px solid #bfe8cc;
+  border-radius:14px;
+  padding:12px 14px;
+  color:#247047;
+  font-size:13px;
+  line-height:1.7;
+}
+
+.red-message{
+  margin-top:10px;
+  background:#fff7f8;
+  border:1px solid #e4b6bd;
+  border-radius:14px;
+  padding:12px 14px;
+  color:#9b2f3f;
+  font-size:13px;
+  line-height:1.8;
+  font-weight:800;
+}
+
+.request-box{
+  margin-top:10px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:16px;
+  padding:13px;
+  box-shadow:0 4px 14px rgba(30,42,56,.05);
+}
+
+.request-label{
+  color:#7b8794;
+  font-size:12px;
+  margin-bottom:8px;
+}
+
+.request-box textarea{
+  width:100%;
+  min-height:92px;
+  resize:vertical;
+  border:1px solid var(--line);
+  border-radius:12px;
+  padding:10px 12px;
+  outline:0;
+  font:inherit;
+  font-size:13px;
+  line-height:1.6;
+  background:#fbfcfd;
+}
+
+.request-box textarea:focus{
+  border-color:#b8c2cc;
+  background:#fff;
+}
+
+.request-actions{
+  margin-top:10px;
+  display:flex;
+  justify-content:flex-end;
+}
+
+.request-actions button{
+  border:0;
+  background:var(--green);
+  color:#fff;
+  border-radius:999px;
+  padding:9px 16px;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.request-actions button:hover{
+  filter:brightness(.96);
 }
 
 .recent{
@@ -265,6 +367,60 @@ a{
   font-size:11px;
   line-height:1.7;
   color:#8a96a3;
+}
+
+.modal-bg{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.38);
+  z-index:99;
+  align-items:center;
+  justify-content:center;
+  padding:22px;
+}
+
+.modal-bg.show{
+  display:flex;
+}
+
+.modal{
+  width:min(360px,100%);
+  background:#fff;
+  border-radius:18px;
+  box-shadow:0 18px 42px rgba(0,0,0,.24);
+  overflow:hidden;
+}
+
+.modal-head{
+  padding:17px 18px 10px;
+  font-size:17px;
+  font-weight:800;
+  color:#1f2328;
+}
+
+.modal-body{
+  padding:0 18px 16px;
+  color:#5f6b78;
+  font-size:13px;
+  line-height:1.8;
+}
+
+.modal-actions{
+  border-top:1px solid #edf1f4;
+  display:flex;
+  justify-content:flex-end;
+  padding:10px 12px;
+}
+
+.modal-actions button{
+  border:0;
+  background:transparent;
+  color:var(--green);
+  font-size:14px;
+  font-weight:800;
+  cursor:pointer;
+  padding:8px 12px;
 }
 
 @media(max-width:480px){
@@ -326,6 +482,18 @@ a{
 
 </div>
 
+<div id="rejectModal" class="modal-bg">
+  <div class="modal">
+    <div class="modal-head">申請できませんでした</div>
+    <div class="modal-body">
+      榊 隆文さんは友だち申請を受け付けていないか、申請を拒否しました。
+    </div>
+    <div class="modal-actions">
+      <button onclick="closeRejectModal()">OK</button>
+    </div>
+  </div>
+</div>
+
 <script>
 function add(){
   const v = document.getElementById('name').value.trim();
@@ -345,6 +513,52 @@ function add(){
         <div class="arrow">›</div>
       </a>
     `;
+  }else if(normalized === '榊隆文'){
+    res.innerHTML = `
+      <div class="user-card static">
+        <div class="avatar doctor">榊</div>
+        <div class="user-main">
+          <div class="user-name">榊 隆文</div>
+          <div class="user-desc">友だち申請を送信できます</div>
+        </div>
+      </div>
+
+      <div class="request-box">
+        <div class="request-label">申請文</div>
+        <textarea id="sakakiMessage" placeholder="申請文を入力してください"></textarea>
+        <div class="request-actions">
+          <button onclick="sendSakakiRequest()">申請を送信</button>
+        </div>
+      </div>
+    `;
+  }else if(normalized === '杉谷遥'){
+    res.innerHTML = `
+      <div class="user-card static">
+        <div class="avatar haruka">遥</div>
+        <div class="user-main">
+          <div class="user-name">杉谷 遥</div>
+          <div class="user-desc">すでに友だちです</div>
+        </div>
+      </div>
+
+      <div class="already">
+        あなたはすでにこのユーザーと友だちです。
+      </div>
+    `;
+  }else if(normalized === '杣木真白'){
+    res.innerHTML = `
+      <div class="user-card static">
+        <div class="avatar mashiro">杣</div>
+        <div class="user-main">
+          <div class="user-name">杣木 真白</div>
+          <div class="user-desc">ユーザー情報を確認できません</div>
+        </div>
+      </div>
+
+      <div class="red-message">
+        私たちは、彼女を神のそばから連れ戻すことができません。
+      </div>
+    `;
   }else{
     res.innerHTML = `
       <div class="notfound">
@@ -354,6 +568,20 @@ function add(){
     `;
   }
 }
+
+function sendSakakiRequest(){
+  document.getElementById('rejectModal').classList.add('show');
+}
+
+function closeRejectModal(){
+  document.getElementById('rejectModal').classList.remove('show');
+}
+
+document.getElementById('rejectModal').addEventListener('click', function(e){
+  if(e.target === this){
+    closeRejectModal();
+  }
+});
 </script>
 
 </body>
