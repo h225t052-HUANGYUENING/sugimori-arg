@@ -969,6 +969,93 @@ a:hover{text-decoration:underline;}
   text-decoration:underline;
 }
 
+
+.truth-gate{
+  margin-top:22px;
+  padding:18px;
+  border:1px solid #dce7f5;
+  border-radius:16px;
+  background:#f8fbff;
+  text-align:center;
+}
+
+.truth-gate-title{
+  font-size:14px;
+  font-weight:900;
+  color:#355070;
+  margin-bottom:6px;
+}
+
+.truth-gate-desc{
+  font-size:12px;
+  color:#7b8794;
+  line-height:1.7;
+  margin-bottom:14px;
+}
+
+.truth-btn{
+  border:0;
+  background:#1772f6;
+  color:#fff;
+  border-radius:999px;
+  padding:10px 18px;
+  font-size:13px;
+  font-weight:900;
+  cursor:pointer;
+  font-family:inherit;
+}
+
+.truth-btn:hover{
+  background:#0f5dc8;
+}
+
+.truth-modal-title{
+  font-size:17px;
+  font-weight:900;
+  margin-bottom:8px;
+}
+
+.truth-modal-text{
+  color:#2f3842;
+  font-size:14px;
+  line-height:1.8;
+  margin-bottom:16px;
+  white-space:pre-line;
+}
+
+.truth-modal-buttons{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+
+.truth-choice{
+  width:100%;
+  border:0;
+  border-radius:12px;
+  padding:11px 12px;
+  font-size:14px;
+  font-weight:800;
+  cursor:pointer;
+  font-family:inherit;
+  line-height:1.55;
+}
+
+.truth-choice.primary{
+  background:#1772f6;
+  color:#fff;
+}
+
+.truth-choice.option{
+  background:#eef2f5;
+  color:#2f3842;
+  text-align:left;
+}
+
+.truth-choice.option:hover{
+  background:#e2e8ee;
+}
+
 @media(max-width:860px){
   .page{
     display:block;
@@ -1466,6 +1553,18 @@ a:hover{text-decoration:underline;}
   <div class="post-card" id="postCard" onclick="event.stopPropagation()"></div>
 </div>
 
+
+<div class="login-mask" id="truthMask" onclick="closeTruthCheck()">
+  <div class="login-card" onclick="event.stopPropagation()">
+    <div class="truth-modal-title" id="truthModalTitle">確認</div>
+    <div class="truth-modal-text" id="truthModalText">あなたは真相を見つけましたか？</div>
+    <div class="truth-modal-buttons" id="truthModalButtons">
+      <button class="truth-choice primary" onclick="answerTruth(true)">はい</button>
+      <button class="truth-choice option" onclick="answerTruth(false)">まだ分からない</button>
+    </div>
+  </div>
+</div>
+
 <div class="login-mask" id="loginMask" onclick="closeLogin()">
   <div class="login-card" onclick="event.stopPropagation()">
     <div class="login-title">知新にログイン</div>
@@ -1486,6 +1585,64 @@ a:hover{text-decoration:underline;}
 </div>
 
 <script>
+
+let truthShizukaIndex = 0;
+
+const truthShizukaLines = [
+  "若い人、少し話してもいいですか。",
+  "私は遥の祖母、杉谷 静です。",
+  "あの子は……杉鳴様に呼ばれたんです。"
+];
+
+function openTruthCheck(){
+  truthShizukaIndex = 0;
+  document.getElementById("truthModalTitle").textContent = "確認";
+  document.getElementById("truthModalText").textContent = "あなたは真相を見つけましたか？";
+  document.getElementById("truthModalButtons").innerHTML = `
+    <button class="truth-choice primary" onclick="answerTruth(true)">はい</button>
+    <button class="truth-choice option" onclick="answerTruth(false)">まだ分からない</button>
+  `;
+  document.getElementById("truthMask").classList.add("show");
+}
+
+function closeTruthCheck(){
+  document.getElementById("truthMask").classList.remove("show");
+}
+
+function answerTruth(found){
+  if(!found){
+    closeTruthCheck();
+    return;
+  }
+  truthShizukaIndex = 0;
+  showTruthShizukaLine();
+}
+
+function showTruthShizukaLine(){
+  document.getElementById("truthModalTitle").textContent = "杉谷 静";
+  document.getElementById("truthModalText").textContent = truthShizukaLines[truthShizukaIndex];
+
+  if(truthShizukaIndex < truthShizukaLines.length - 1){
+    document.getElementById("truthModalButtons").innerHTML = `
+      <button class="truth-choice primary" onclick="nextTruthShizukaLine()">顔を上げる</button>
+    `;
+  }else{
+    document.getElementById("truthModalButtons").innerHTML = `
+      <button class="truth-choice option" onclick="location.href='ending_a.html'">
+        調べたことを正直に話す
+      </button>
+      <button class="truth-choice option" onclick="location.href='ending_b.html'">
+        何も言わず、一人で遥を探しに行く
+      </button>
+    `;
+  }
+}
+
+function nextTruthShizukaLine(){
+  truthShizukaIndex++;
+  showTruthShizukaLine();
+}
+
 function openImage(src, caption){
   document.getElementById("modalImage").src = src;
   document.getElementById("modalCaption").textContent = caption;
@@ -1664,6 +1821,8 @@ function festivalBodyHTML(canRead){
 
       <p>私がこの件に関わった時点で、すでに過去の「神隠し」は村の内部だけの噂ではありませんでした。調査を引き継いだあと、榊隆文の名前が何度も浮かびました。榊病院、健康診断、巡山祭の準備、そして消えた人間の記録。その線は見えていたのに、村の人たちはほとんど何も話そうとしませんでした。</p>
 
+      <p>特に気になったのは、消えた人間の直前に、榊病院で普段より細かい検査が行われていたことです。血液型、既往歴、体質、健康状態。表向きは学校の健康診断や地域医療の一部として処理されていましたが、記録の残し方が不自然でした。私はこの時点で、榊病院の院長が、単なる隠蔽ではなく、<span class="clue">人体器官の売買</span>に関わっている可能性を疑い始めました。</p>
+
       <p>聞き込みに行けば、急に仕事を理由に席を外される。関係者に会おうとすれば、先に誰かから連絡が回っている。祭りの資料は「古いものだから残っていない」と言われ、神社の記録は「外部に見せるものではない」と拒まれる。こちらが警察関係者だと分かっていても、村全体が一つの壁のようになっていました。</p>
 
       <p>それでも私は、一度だけ山に入りました。巡山の経路にある神龕を自分で確認するためです。そのうち一つの神龕の下には、小さな柜のような空間がありました。そこに、数本の髪の毛が残っていました。古いものではありましたが、自然にそこへ落ちたとは思えない位置でした。</p>
@@ -1677,6 +1836,12 @@ function festivalBodyHTML(canRead){
       <p>もしこれを読んでいる人がいるなら、巡山祭をただの祭りだと思わないでください。あの山には、村の人間が見ないふりをしているものがあります。そしてそれは、まだ終わっていません。</p>
     </div>
     <div class="festival-deleted-mark">この投稿は削除されました。</div>
+
+    <div class="truth-gate">
+      <div class="truth-gate-title">あなたは真相を見つけましたか？</div>
+      <div class="truth-gate-desc">この先に進むと、杉守村での最後の選択に移ります。</div>
+      <button class="truth-btn" onclick="openTruthCheck()">答える</button>
+    </div>
   `;
 }
 
